@@ -1,0 +1,10 @@
+{ 
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "${workspaceFolder}/sssp_dijkstra/",
+            "binaryPath": "${workspaceFolder}/sssp_dijkstra/sssp",
+            "binaryArgs": [],
+            "stopAtEntry": false 
+        },
+    ],
+}
