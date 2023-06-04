@@ -1,5 +1,6 @@
 #include <vector>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "util.h"
 #include "problem.h"
@@ -13,4 +14,11 @@ bool is_correct(const std::vector<int32_t>& input, const std::vector<int32_t>& s
     }
 
     return true;
+}
+
+void print_vec(const std::vector<int32_t>& input) {
+    for (auto val: input) {
+        printf("%d, ", val);
+    }
+    printf("\n");
 }
