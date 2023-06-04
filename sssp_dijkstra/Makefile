@@ -10,11 +10,11 @@ all: sssp
 sssp: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o sssp $(OBJS) 
 
-build/main.o: main.cpp
-build/sssp_mpi.o: sssp_mpi.cpp
-build/sssp_omp.o: sssp_omp.cpp
-build/sssp.o: sssp.cpp
-build/util.o: util.cpp
+main.o: main.cpp
+sssp_mpi.o: sssp_mpi.cpp
+sssp_omp.o: sssp_omp.cpp
+sssp.o: sssp.cpp
+util.o: util.cpp
 
 clean:
 	$(RM) $(OBJS)

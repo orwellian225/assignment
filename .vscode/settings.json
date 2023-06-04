@@ -4,8 +4,19 @@
             "cwd": "${workspaceFolder}/sssp_dijkstra/",
             "binaryPath": "${workspaceFolder}/sssp_dijkstra/sssp",
             "binaryArgs": [],
-            "stopAtEntry": false 
+            "stopAtEntry": false
         },
+        {
+            "cwd": "${workspaceFolder}/scan/",
+            "binaryPath": "${workspaceFolder}/scan/scan",
+            "binaryArgs": [],
+            "stopAtEntry": false
+        },
+        {
+            "cwd": "/home/orwellian/uni/2023/pc/assignment/scan",
+            "binaryPath": "/home/orwellian/uni/2023/pc/assignment/scan/scan",
+            "binaryArgs": []
+        }
     ],
     "files.associations": {
         "chrono": "cpp",
