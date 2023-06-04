@@ -1,6 +1,6 @@
 CXX = mpic++
 RM = rm -f
-CXXFLAGS=-g -std=c++20 -fopenmp
+CXXFLAGS=-g -std=c++11 -fopenmp
 
 SRCS = main.cpp sssp_mpi.cpp sssp_omp.cpp sssp.cpp util.cpp
 OBJS = $(subst .cpp,.o, $(SRCS))
@@ -10,11 +10,11 @@ all: sssp
 sssp: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o sssp $(OBJS) 
 
-main.o: main.cpp
-sssp_mpi.o: sssp_mpi.cpp
-sssp_omp.o: sssp_omp.cpp
-sssp.o: sssp.cpp
-util.o: util.cpp
+build/main.o: main.cpp
+build/sssp_mpi.o: sssp_mpi.cpp
+build/sssp_omp.o: sssp_omp.cpp
+build/sssp.o: sssp.cpp
+build/util.o: util.cpp
 
 clean:
 	$(RM) $(OBJS)
