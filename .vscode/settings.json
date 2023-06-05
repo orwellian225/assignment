@@ -14,6 +14,22 @@
             ],
             "stopAtEntry": false
         },
+        {
+            "cwd": "${workspaceFolder}/bitonicsort/",
+            "binaryPath": "${workspaceFolder}/bitonicsort/bitonic",
+            "binaryArgs": [
+                "2"
+            ],
+            "stopAtEntry": false
+        },
+        {
+            "cwd": "${workspaceFolder}/bitonicsort/",
+            "binaryPath": "${workspaceFolder}/bitonicsort/bitonic_omp",
+            "binaryArgs": [
+                "2"
+            ],
+            "stopAtEntry": false
+        },
     ],
     "files.associations": {
         "chrono": "cpp",
