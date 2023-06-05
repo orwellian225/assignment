@@ -6,7 +6,7 @@
 
 bool is_correct(const std::vector<int32_t>& input, const std::vector<int32_t>& solution) {
 
-    if (input.size() == solution.size()) {
+    if (input.size() != solution.size()) {
         return false;
     }
 
