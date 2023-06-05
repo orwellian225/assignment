@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
     MPI_Comm_size(MPI_COMM_WORLD, &num_processors);
     MPI_Comm_rank(MPI_COMM_WORLD, &process_id);
 
-    size_t problem_size = std::pow(2, atoi(argv[1]));
+    size_t problem_size = std::pow(2, argc >= 2 ? atoi(argv[1]) : 3);
     std::vector<int32_t> problem(problem_size);
 
     if (process_id == 0) {

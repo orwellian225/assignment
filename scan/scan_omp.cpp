@@ -4,12 +4,39 @@
 #include <stdint.h>
 #include <chrono>
 #include <stddef.h>
+
 #include <omp.h>
 
-#include "problem.h"
 #include "util.h"
 
 #define pow2(x) std::pow(2, x)
+
+static size_t NUM_THREADS;
+
+void up_sweep(std::vector<int32_t>& input);
+void down_sweep(std::vector<int32_t>& input);
+std::vector<int32_t> scan(const std::vector<int32_t>& input);
+
+int main(int argc, char* argv[]) {
+    srand(time(NULL));
+    size_t problem_size = std::pow(2, argc >= 2 ? atoi(argv[1]) : 3);
+    NUM_THREADS = argc >= 3 ? atoi(argv[2]);
+    std::vector<int32_t> problem(problem_size);
+
+    omp_set_num_threads(omp_get_max_threads());
+    #pragma omp for
+    for (size_t j = 0; j < problem_size; ++j) {
+        problem[j] = rand() % (10 * problem_size);
+
+    }
+
+    printf("Problem size: %ld\n", problem_size);
+    auto start = std::chrono::high_resolution_clock::now();
+    auto solution = scan(problem);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> time= end - start;
+    printf("Open MP Execution time = %f ms\n", time.count());
+}
 
 void up_sweep(std::vector<int32_t>& input) {
     size_t max_depth = static_cast<size_t>(std::log2(input.size()));
@@ -44,10 +71,10 @@ void down_sweep(std::vector<int32_t>& input) {
 
 }
 
-std::vector<int32_t> scan_omp(const std::vector<int32_t>& input) {
+std::vector<int32_t> scan(const std::vector<int32_t>& input) {
 
     // Either set the number of threads to the min of number of elements or number of available threads
-    size_t num_threads = input.size() < omp_get_max_threads() ? input.size() : omp_get_max_threads();
+    size_t num_threads = input.size() < NUM_THREADS ? input.size() : NUM_THREADS;
     omp_set_num_threads(num_threads);
 
     std::vector<int32_t> result(input);
