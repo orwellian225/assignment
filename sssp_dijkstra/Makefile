@@ -11,7 +11,7 @@ OBJS_S = $(subst .cpp,.o, $(SRCS_S))
 OBJS_O = $(subst .cpp,.o, $(SRCS_O))
 OBJS_M = $(subst .cpp,.o, $(SRCS_M))
 
-all: sssp #sssp_omp sssp_mpi
+all: sssp_omp
 
 sssp: $(OBJS_S)
 	$(CXX) $(CXXFLAGS) -o sssp $(OBJS_S)

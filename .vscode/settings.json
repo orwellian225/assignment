@@ -30,6 +30,12 @@
             ],
             "stopAtEntry": false
         },
+        {
+            "cwd": "${workspaceFolder}/sssp_dijkstra/",
+            "binaryPath": "${workspaceFolder}/sssp_dijkstra/sssp_omp",
+            "binaryArgs": [],
+            "stopAtEntry": false
+        },
     ],
     "files.associations": {
         "chrono": "cpp",
