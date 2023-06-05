@@ -10,7 +10,7 @@
             "cwd": "${workspaceFolder}/scan/",
             "binaryPath": "${workspaceFolder}/scan/scan",
             "binaryArgs": [
-                "29"
+                "3"
             ],
             "stopAtEntry": false
         },
@@ -97,7 +97,7 @@
         "map": "cpp",
         "iostream": "cpp"
     },
-    "makefile.makeDirectory": "${workspaceFolder}/sssp_dijkstra",
+    "makefile.makeDirectory": "${workspaceFolder}/scan",
     "makefile.makePath": "make",
-    "makefile.makefilePath": "${workspaceFolder}/sssp_dijkstra",
+    "makefile.makefilePath": "${workspaceFolder}/scan",
 }

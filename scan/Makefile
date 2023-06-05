@@ -11,7 +11,7 @@ OBJS_S = $(subst .cpp,.o, $(SRCS_S))
 OBJS_O = $(subst .cpp,.o, $(SRCS_O))
 OBJS_M = $(subst .cpp,.o, $(SRCS_M))
 
-all: scan scan_omp
+all: scan scan_omp scan_mpi
 
 scan: $(OBJS_S)
 	$(CXX) $(CXXFLAGS) -o scan $(OBJS_S)
