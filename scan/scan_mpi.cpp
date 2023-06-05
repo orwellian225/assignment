@@ -43,18 +43,18 @@ int main(int argc, char* argv[]) {
 }
 
 std::vector<int32_t> scan_mpi(const std::vector<int32_t>& input, int num_processors, int process_id) {
-    std::vector<int32_t> result(input);
+    std::vector<int32_t> processing(input);
     std::vector<int32_t> sum(num_processors);
 
-    MPI_Bcast(result.data(), result.size(), MPI_INT, 0, MPI_COMM_WORLD);
-    int32_t process_size = result.size() / num_processors;
+    MPI_Bcast(processing.data(), processing.size(), MPI_INT, 0, MPI_COMM_WORLD);
+    int32_t process_size = processing.size() / num_processors;
 
     // Processor Sublist
     int32_t start_idx = process_id * process_size;
     for (int32_t j = 1; j < process_size; ++j) {
-        result[start_idx + j] += result[start_idx + j - 1];
+        processing[start_idx + j] += processing[start_idx + j - 1];
     }
-    sum[process_id] = result[start_idx + process_size - 1];
+    sum[process_id] = processing[start_idx + process_size - 1];
 
     /// Processor types for each step of the tree
     /// Sender --> Left Vertex of Bin Tree -> Sends its sum value to the relevant receiver
@@ -113,9 +113,10 @@ std::vector<int32_t> scan_mpi(const std::vector<int32_t>& input, int num_process
     }
 
     for (int32_t i = 0; i < process_size; ++i) {
-        result[start_idx + i] += sum[process_id];
+        processing[start_idx + i] += sum[process_id];
     }
 
-    MPI_Gather(result.data() + start_idx, process_size, MPI_INT, result.data(), process_size, MPI_INT, 0, MPI_COMM_WORLD);
-    return result;
+    std::vector<int32_t> result(processing.size());
+    MPI_Gather(processing.data() + start_idx, process_size, MPI_INT, result.data(), process_size, MPI_INT, 0, MPI_COMM_WORLD);
+    return processing;
 }
