@@ -7,6 +7,9 @@
 struct path_t {
     uint32_t distance;
     std::vector<size_t> path;
+
+    bool operator == (const path_t& rhs);
+    bool operator != (const path_t& rhs);
 };
 
 std::vector<std::string> split_string(std::string input, std::string delimiter);
@@ -18,3 +21,4 @@ bool and_all(const std::vector<bool>& input);
 std::string vec_to_str(const std::vector<size_t>& input);
 
 std::vector<path_t> dijkstras_serial(const std::vector<uint32_t>& weights, size_t source_vertex, size_t num_vertices);
+bool is_correct(const std::vector<path_t>& solution, const std::vector<uint32_t>& weights, size_t source_vertex, size_t num_vertices);

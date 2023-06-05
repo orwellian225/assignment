@@ -6,6 +6,28 @@
 
 #include "util.h"
 
+bool path_t::operator== (const path_t& rhs) {
+    if (distance != rhs.distance) {
+        return false;
+    }
+
+    if (path.size() != rhs.path.size()) {
+        return false;
+    }
+
+    for (size_t i = 0; i < path.size(); ++i) {
+        if (path[i] != rhs.path[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool path_t::operator!= (const path_t& rhs) {
+    return !(*this == rhs);
+}
+
 std::vector<std::string> split_string(std::string input, std::string delimiter) {
     std::vector<std::string> result;
 
@@ -83,4 +105,21 @@ std::vector<path_t> dijkstras_serial(const std::vector<uint32_t>& weights, size_
     }
 
     return paths;
+}
+
+bool is_correct(const std::vector<path_t>& solution, const std::vector<uint32_t>& weights, size_t source_vertex, size_t num_vertices) {
+
+    std::vector<path_t> correct_solution = dijkstras_serial(weights, source_vertex, num_vertices);
+
+    if (correct_solution.size() != solution.size()) {
+        return false;
+    }
+
+    for (size_t i = 0; i < correct_solution.size(); ++i) {
+        if (correct_solution[i] != solution[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }

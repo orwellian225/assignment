@@ -46,6 +46,7 @@ int main(int argc, char* argv[]) {
     std::chrono::duration<double, std::milli> time = end_time - start_time;
     printf("Problem: |V| = %ld, |E| = %ld\n", num_vertices, num_edges);
     printf("Execution time: %lf ms\n", time.count()); 
+    printf("Correctness: %s\n", is_correct(solution, weights, source_vertex, num_vertices) ? "true" : "false");
 }
 
 std::vector<path_t> dijkstras(const std::vector<uint32_t>& weights, size_t source_vertex, size_t num_vertices) {
