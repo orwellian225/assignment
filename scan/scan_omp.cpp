@@ -12,9 +12,9 @@
 #define pow2(x) std::pow(2, x)
 
 void up_sweep(std::vector<int32_t>& input) {
-    size_t max_d = static_cast<size_t>(std::log2(input.size()));
+    size_t max_depth = static_cast<size_t>(std::log2(input.size()));
 
-    for (size_t d = 0; d < max_d; ++d) {
+    for (size_t d = 0; d < max_depth; ++d) {
 
         size_t p2_0 = static_cast<size_t>(pow2(d));
         size_t p2_1 = static_cast<size_t>(pow2(d + 1));
@@ -27,10 +27,10 @@ void up_sweep(std::vector<int32_t>& input) {
 }
 
 void down_sweep(std::vector<int32_t>& input) {
-    size_t max_d = static_cast<size_t>(std::log2(input.size()));
+    size_t max_depth = static_cast<size_t>(std::log2(input.size()));
     input[input.size() - 1] = 0;
 
-    for (size_t d = max_d; d-- > 0; ) {
+    for (size_t d = max_depth; d-- > 0; ) {
         size_t p2_0 = static_cast<size_t>(pow2(d));
         size_t p2_1 = static_cast<size_t>(pow2(d + 1));
 
@@ -54,7 +54,6 @@ std::vector<int32_t> scan_omp(const std::vector<int32_t>& input) {
     std::vector<int32_t> sum(num_threads);
     size_t thread_size = result.size() / num_threads; // Length of sublist in thread
 
-    auto sub_start = std::chrono::high_resolution_clock::now();
     // size_t is u64 or u32 so cheap to clone
     // Execute a serial scan on each processors sublist
     #pragma omp parallel shared(result, sum, input)
@@ -69,11 +68,9 @@ std::vector<int32_t> scan_omp(const std::vector<int32_t>& input) {
         sum[thread_id] = result[start_idx + thread_size - 1];
     }
 
-    // auto sweep_start = std::chrono::high_resolution_clock::now();
     up_sweep(sum);
     down_sweep(sum);
 
-    // auto apply_start = std::chrono::high_resolution_clock::now();
     // Apply the sum to all the thread sublists    
     #pragma omp parallel shared(sum, result)
     {
