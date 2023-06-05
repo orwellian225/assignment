@@ -12,7 +12,7 @@ OBJS_O = $(subst .cpp,.o, $(SRCS_O))
 OBJS_M = $(subst .cpp,.o, $(SRCS_M))
 
 # all: bitonic bitonic_omp bitonic_mpi
-all: bitonic_omp
+all: bitonic bitonic_omp
 
 bitonic: $(OBJS_S)
 	$(CXX) $(CXXFLAGS) -o bitonic $(OBJS_S)

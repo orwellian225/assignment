@@ -91,4 +91,7 @@
         "map": "cpp",
         "iostream": "cpp"
     },
+    "makefile.makeDirectory": "${workspaceFolder}/sssp_dijkstra",
+    "makefile.makePath": "make",
+    "makefile.makefilePath": "${workspaceFolder}/sssp_dijkstra",
 }

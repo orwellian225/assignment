@@ -1,52 +1,89 @@
-#include <vector>
-#include <cstddef>
-#include <cstdint>
-#include <thread>
+#include <algorithm>
+#include <stdio.h>
+#include <string>
+#include <fstream>
 #include <chrono>
 
 #include "util.h"
-#include "main.h"
 
-std::vector<path_t> sssp_serial(size_t source, size_t vertex_count, std::vector<uint32_t> weights) {
-    std::vector<size_t> visited = { source }; 
-    std::vector<path_t> paths(vertex_count);
+/// path_t struct can be found in util.h
+/// Definition
+/// struct path_t {
+///     uint32_t distance;
+///     std::vector<size_t> path;
+/// }
+std::vector<path_t> dijkstras(const std::vector<uint32_t>& weights, size_t source_vertex, size_t num_vertices);
 
-    for(size_t i = 0; i < vertex_count; ++i) {
-        // Search through the frontier, and if the the current vertex is found in frontier, then move to the next vertex
-        if (search_visited(visited, i) != -1) { continue; }
+int main(int argc, char* argv[]) {
+    std::string graph_path = argc >= 2 ? argv[1] : "./graphs/graph_0.txt";
+    size_t source_vertex = argc >= 3 ? atoi(argv[2]) : 0;
 
-        // If the direct path doesn't exist (== 0) to the vertex, then set its loss to be infinity (or thereabouts)
-        uint32_t weight = weights[xy_to_idx(source, i, vertex_count)];
-        paths[i].distance = weight == 0 ? UINT32_MAX : weight;
-        paths[i].source_vertex = source;
+    std::vector<uint32_t> weights;
+    size_t num_vertices, num_edges = 0;
+
+    std::ifstream graph_file(graph_path);
+    std::string line;
+
+    getline(graph_file, line);
+
+    auto problem_description_line = split_string(line, " ");
+    num_vertices = stoi(problem_description_line[0]);
+    num_edges = stoi(problem_description_line[1]);
+    weights = std::vector<uint32_t>(num_vertices * num_vertices, 0);
+
+    for (size_t i = 0; i < num_edges; ++i) {
+        getline(graph_file, line);
+        auto split_line = split_string(line, " ");
+        size_t idx = rc_to_i(stoi(split_line[0]), stoi(split_line[1]), num_vertices);
+        size_t sym_idx = rc_to_i(stoi(split_line[1]), stoi(split_line[0]), num_vertices);
+        weights[idx] = stoi(split_line[2]);
+        weights[sym_idx] = stoi(split_line[2]); // Undirected graph produces symmetrical adjacency matrix
     }
 
-    while (visited.size() != vertex_count) {
+    auto start_time = std::chrono::high_resolution_clock::now();
+    auto solution = dijkstras(weights, source_vertex, num_vertices);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> time = end_time - start_time;
+    printf("Problem: |V| = %ld, |E| = %ld\n", num_vertices, num_edges);
+    printf("Execution time: %lf ms\n", time.count()); 
+}
 
-        uint32_t min_val = UINT32_MAX;
-        size_t min_vertex = 0; // Can start at 0, because we still do the comparison at 0, so it'll get updated to its correct loss value
-        for (size_t i = 0; i < vertex_count; ++i) {
-            if (search_visited(visited, i) != -1) { continue; }
+std::vector<path_t> dijkstras(const std::vector<uint32_t>& weights, size_t source_vertex, size_t num_vertices) {
+    #define weights(r, c) weights[rc_to_i(r, c, num_vertices)]
 
-            min_val = min_val < paths[i].distance ? min_val : paths[i].distance;
-            min_vertex = min_val < paths[i].distance ? min_vertex : i;
+    std::vector<bool> visited(num_vertices, false);
+    std::vector<path_t> paths(num_vertices);
+
+    visited[source_vertex] = true;
+
+    for (size_t i = 0; i < num_vertices; ++i) {
+        if (visited[i]) { continue; }
+
+        paths[i] = path_t {
+            weights(source_vertex, i) == 0 ? UINT32_MAX : weights(source_vertex, i), // Add the distance to the vertex
+            weights(source_vertex, i) == 0 ? std::vector<size_t>() : std::vector<size_t>(1, i) // Add the vertex to the path
+        };
+    }
+
+    while (!and_all(visited)) {
+        size_t u = num_vertices + 1;
+        // Find vertex u
+        for (size_t i = 0; i < num_vertices; ++i) {
+            if (visited[i]) { continue; }
+            if (u >= num_vertices + 1) { u = i; } // Some error handling to correctly initialize u
+            u = paths[i].distance < paths[u].distance ? i : u;
         }
 
-        visited.push_back(min_vertex);
-
-        for (size_t i = 0; i < vertex_count; ++i) {
-            if (search_visited(visited, i) != -1) { continue; }
-
-            size_t weight_idx = xy_to_idx(min_vertex, i, vertex_count);
-            paths[i].distance = paths[i].distance < paths[min_vertex].distance + weights[weight_idx] ? paths[i].distance : paths[min_vertex].distance + weights[weight_idx];
-
-            if (paths[i].distance < paths[min_vertex].distance + weights[weight_idx]) {
-                paths[i] = paths[min_vertex];
-                paths[i].distance += weights[weight_idx];
+        visited[u] = true;
+        for (size_t i = 0; i < num_vertices; ++i) {
+            if (visited[i]) { continue; }
+            uint32_t weight = weights(u, i);
+            if ( weights(u, i) != 0 && paths[i].distance > paths[u].distance + weights(u, i)) {
+                paths[i].distance = paths[u].distance + weights(u, i);
+                paths[i].path = paths[u].path;
                 paths[i].path.push_back(i);
-            }
+            } 
         }
-
     }
 
     return paths;

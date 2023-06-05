@@ -1,41 +1,86 @@
-#include <cstddef>
-#include <cstdint>
-#include <stdio.h>
 #include <vector>
+#include <string>
+#include <stdint.h>
+#include <stddef.h>
+#include <tuple>
 
 #include "util.h"
-#include "main.h"
 
-size_t idx_to_x(size_t idx, size_t width) { return idx % width; }
-size_t idx_to_y(size_t idx, size_t width) { return idx / width; }
-size_t xy_to_idx(size_t x, size_t y, size_t width) { return y * width + x; }
+std::vector<std::string> split_string(std::string input, std::string delimiter) {
+    std::vector<std::string> result;
 
-size_t search_visited(const std::vector<size_t>& visited, size_t vertex) {
-    for (size_t i = 0; i < visited.size(); ++i) {
-        if (visited[i] == vertex) {
-            return i;
-        }
+    size_t pos = 0;
+    std::string token;
+    while ((pos = input.find(delimiter)) != std::string::npos) {
+        token = input.substr(0, pos);
+        result.push_back(token);
+        input.erase(0, pos + delimiter.length());
     }
+    result.push_back(input); // Add the last element
 
-    return -1;
+    return result;
 }
 
-void print_distance(const std::vector<path_t>& serial, const std::vector<path_t>& omp, const std::vector<path_t>& mpi, size_t source_vertex) {
-    printf("Source Vertex: | Destination Vertex | Distance Serial | Distance OMP | Distance MPI\n");
-    for (size_t i = 0; i < serial.size(); ++i) {
-        if (i == source_vertex) {
-            continue;
-        }
-        printf("%ld | %ld | %d | %d | %d\n", source_vertex, i, serial[i].distance, mpi[i].distance, mpi[i].distance);
+size_t rc_to_i(size_t row, size_t col, size_t width) { return static_cast<size_t>(row * width + col); }
+std::pair<size_t, size_t> i_to_rc(size_t i, size_t width) { return std::make_pair(static_cast<size_t>(i / width), static_cast<size_t>(i % width)); }
+
+bool and_all(const std::vector<bool>& input) {
+    for (auto val: input) {
+        if (!val) { return false; }
     }
+    return true;
 }
 
-void print_path(const std::vector<path_t>& serial, const std::vector<path_t>& omp, const std::vector<path_t>& mpi, size_t source_vertex) {
-    printf("Source Vertex: | Destination Vertex | Path Serial | Path OMP | Path MPI\n");
-    for (size_t i = 0; i < serial.size(); ++i) {
-        if (i == source_vertex) {
-            continue;
-        }
-        printf("%ld | %ld | %s | %s | %s\n", source_vertex, i, serial[i].path_string().c_str(), omp[i].path_string().c_str(), mpi[i].path_string().c_str());
+std::string vec_to_str(const std::vector<size_t>& input) {
+    std::string result = "";
+
+    for (size_t i = 0; i < input.size(); ++i) {
+        result += std::to_string(input[i]) + " ";
     }
+
+    if (result.size() >= 1) 
+        result.erase(result.size() - 1);
+
+    return result;
+}
+
+std::vector<path_t> dijkstras_serial(const std::vector<uint32_t>& weights, size_t source_vertex, size_t num_vertices) {
+    #define weights(r, c) weights[rc_to_i(r, c, num_vertices)]
+
+    std::vector<bool> visited(num_vertices, false);
+    std::vector<path_t> paths(num_vertices);
+
+    visited[source_vertex] = true;
+
+    for (size_t i = 0; i < num_vertices; ++i) {
+        if (visited[i]) { continue; }
+
+        paths[i] = path_t {
+            weights(source_vertex, i) == 0 ? UINT32_MAX : weights(source_vertex, i), // Add the distance to the vertex
+            weights(source_vertex, i) == 0 ? std::vector<size_t>() : std::vector<size_t>(1, i) // Add the vertex to the path
+        };
+    }
+
+    while (!and_all(visited)) {
+        size_t u = num_vertices + 1;
+        // Find vertex u
+        for (size_t i = 0; i < num_vertices; ++i) {
+            if (visited[i]) { continue; }
+            if (u >= num_vertices + 1) { u = i; } // Some error handling to correctly initialize u
+            u = paths[i].distance < paths[u].distance ? i : u;
+        }
+
+        visited[u] = true;
+        for (size_t i = 0; i < num_vertices; ++i) {
+            if (visited[i]) { continue; }
+            uint32_t weight = weights(u, i);
+            if ( weights(u, i) != 0 && paths[i].distance > paths[u].distance + weights(u, i)) {
+                paths[i].distance = paths[u].distance + weights(u, i);
+                paths[i].path = paths[u].path;
+                paths[i].path.push_back(i);
+            } 
+        }
+    }
+
+    return paths;
 }

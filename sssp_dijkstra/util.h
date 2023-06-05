@@ -1,17 +1,20 @@
-#pragma once
+#include <vector>
+#include <string>
+#include <stdint.h>
+#include <stddef.h>
+#include <tuple>
 
-#include <cstddef>
+struct path_t {
+    uint32_t distance;
+    std::vector<size_t> path;
+};
 
-#include "main.h"
+std::vector<std::string> split_string(std::string input, std::string delimiter);
+size_t rc_to_i(size_t row, size_t col, size_t width);
+std::pair<size_t, size_t> i_to_rc(size_t i, size_t width);
 
-size_t idx_to_x(size_t idx, size_t width);
-size_t idx_to_y(size_t idx, size_t width);
-size_t xy_to_idx(size_t x, size_t y, size_t width);
+bool and_all(const std::vector<bool>& input);
 
-// Return the position of the vertex in the visited
-// Returns -1 if the vertex is not found
-size_t search_visited(const std::vector<size_t>& visited, size_t vertex);
+std::string vec_to_str(const std::vector<size_t>& input);
 
-
-void print_distance(const std::vector<path_t>& serial, const std::vector<path_t>& omp, const std::vector<path_t>& mpi, size_t source_vertex);
-void print_path(const std::vector<path_t>& serial, const std::vector<path_t>& omp, const std::vector<path_t>& mpi, size_t source_vertex);
+std::vector<path_t> dijkstras_serial(const std::vector<uint32_t>& weights, size_t source_vertex, size_t num_vertices);
