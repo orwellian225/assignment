@@ -38,3 +38,5 @@ make sssp_omp
 ./sssp_omp ./graphs/graph_9.txt
 ./sssp_omp ./graphs/graph_10.txt 0 1
 ./sssp_omp ./graphs/graph_10.txt
+
+make distclean

@@ -54,9 +54,9 @@ int main(int argc, char* argv[]) {
     auto solution = dijkstras(weights, source_vertex, num_vertices);
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> time = end_time - start_time;
-    printf("Problem: |V| = %ld, |E| = %ld\n", num_vertices, num_edges);
+    printf("Num Threads: %ld - Problem size: |V| = %ld, |E| = %ld\n", NUM_THREADS, num_vertices, num_edges);
     printf("OpenMP Execution time: %lf ms\n", time.count()); 
-    printf("OpenMP Correctness: %s\n", is_correct(solution, weights, source_vertex, num_vertices) ? "true" : "false");
+    printf("OpenMP Correctness: %s\n\n", is_correct(solution, weights, source_vertex, num_vertices) ? "true" : "false");
 }
 
 std::vector<path_t> dijkstras(const std::vector<uint32_t>& weights, size_t source_vertex, size_t num_vertices) {

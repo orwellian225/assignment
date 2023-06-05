@@ -28,10 +28,11 @@ int main(int argc, char* argv[]) {
     printf("Problem size: %ld\n", problem_size);
 
     auto serial_start = std::chrono::high_resolution_clock::now();
-    auto serial_solution = scan_serial(problem);
+    auto serial_solution = scan(problem);
     auto serial_end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> serial_time = serial_end - serial_start;
-    printf("Execution time = %f ms\n", serial_time.count());
+    printf("Serial Execution time = %f ms\n", serial_time.count());
+    printf("Serial Correctness: %s\n\n", is_correct(problem, serial_solution) ? "true" : "false");
 }
 
 std::vector<int32_t> scan(const std::vector<int32_t>& input) {

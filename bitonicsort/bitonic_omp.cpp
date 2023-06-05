@@ -31,7 +31,7 @@ int main(int argc, char* argv[]) {
         problem[j] = rand() % (10 * problem_size);
     }
 
-    printf("Problem size: %ld\n", problem_size);
+    printf("Num Threads: %ld - Problem size: %ld\n", NUM_THREADS, problem_size);
 
     omp_set_num_threads(NUM_THREADS);
     auto start = std::chrono::high_resolution_clock::now();
@@ -43,8 +43,8 @@ int main(int argc, char* argv[]) {
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> time = end - start;
 
-    printf("OMP Execution time %f ms\n", time.count());
-    printf("OMP Correctness: %s\n", is_correct(problem) ? "true" : "false");
+    printf("OpenMP Execution time %f ms\n", time.count());
+    printf("OpenMP Correctness: %s\n\n", is_correct(problem) ? "true" : "false");
 
     return 0;
 }

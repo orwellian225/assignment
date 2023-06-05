@@ -3,14 +3,20 @@
 #include <stdio.h>
 
 #include "util.h"
-#include "problem.h"
 
 bool is_correct(const std::vector<int32_t>& input, const std::vector<int32_t>& solution) {
 
-    std::vector<int32_t> correct_solution = scan_serial(input);
+    if (input.size() == solution.size()) {
+        return false;
+    }
 
-    for (size_t i = 0; i < correct_solution.size(); ++i) {
-        if (solution[i] != correct_solution[i]) { return false; }
+    int32_t sum = 0;
+    for (size_t i = 0; i < input.size(); ++i) {
+        sum += input[i];
+
+        if (solution[i] != sum) {
+            return false;
+        }
     }
 
     return true;

@@ -20,7 +20,7 @@ std::vector<int32_t> scan(const std::vector<int32_t>& input);
 int main(int argc, char* argv[]) {
     srand(time(NULL));
     size_t problem_size = std::pow(2, argc >= 2 ? atoi(argv[1]) : 3);
-    NUM_THREADS = argc >= 3 ? atoi(argv[2]);
+    NUM_THREADS = argc >= 3 ? atoi(argv[2]) : omp_get_max_threads();
     std::vector<int32_t> problem(problem_size);
 
     omp_set_num_threads(omp_get_max_threads());
@@ -30,12 +30,13 @@ int main(int argc, char* argv[]) {
 
     }
 
-    printf("Problem size: %ld\n", problem_size);
+    printf("Num Threads: %ld - Problem size: %ld\n", NUM_THREADS, problem_size);
     auto start = std::chrono::high_resolution_clock::now();
     auto solution = scan(problem);
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> time= end - start;
     printf("Open MP Execution time = %f ms\n", time.count());
+    printf("OpenMP Correctness: %s\n\n", is_correct(problem, solution) ? "true" : "false");
 }
 
 void up_sweep(std::vector<int32_t>& input) {

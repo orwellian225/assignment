@@ -17,3 +17,5 @@ make bitonic_omp
 ./bitonic_omp 16
 ./bitonic_omp 20 1
 ./bitonic_omp 20
+
+make distclean

@@ -11,22 +11,16 @@ OBJS_S = $(subst .cpp,.o, $(SRCS_S))
 OBJS_O = $(subst .cpp,.o, $(SRCS_O))
 OBJS_M = $(subst .cpp,.o, $(SRCS_M))
 
-all: scan
+all: scan scan_omp
 
 scan: $(OBJS_S)
-	$(CXX) $(CXXFLAGS) -o sssp $(OBJS_S)
+	$(CXX) $(CXXFLAGS) -o scan $(OBJS_S)
 
 scan_omp: $(OBJS_O)
-	$(CXX) $(CXXFLAGS) -o sssp_omp $(OBJS_O)
+	$(CXX) $(CXXFLAGS) -o scan_omp $(OBJS_O)
 
 scan_mpi: $(OBJS_M)
-	$(CXX) $(CXXFLAGS) -o sssp_mpi $(OBJS_M)
-
-scan: $(OBJS_LOCAL)
-	$(CXX) $(CXXFLAGS) -o scan $(OBJS_LOCAL) 
-
-scan_mpi: $(OBJS_MPI)
-	$(CXX) $(MPIFLAGS) -o scan_mpi $(OBJS_MPI)
+	$(CXX) $(CXXFLAGS) -o scan_mpi $(OBJS_M)
 
 scan_mpi.o: scan_mpi.cpp
 scan_omp.o: scan.cpp
